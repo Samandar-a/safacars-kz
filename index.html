@@ -13,55 +13,28 @@
     --gold:#ffb800;
 }
 
-body{
-    margin:0;
-    font-family:-apple-system;
-    background:var(--bg);
-    color:#fff;
-}
-
-.header{
-    text-align:center;
-    padding:20px;
-    border-bottom:1px solid var(--border);
-}
-
-.logo{
-    font-size:24px;
-    font-weight:900;
-}
+body{margin:0;font-family:-apple-system;background:var(--bg);color:#fff;}
+.header{text-align:center;padding:20px;border-bottom:1px solid var(--border);}
+.logo{font-size:24px;font-weight:900;}
 .logo span{color:var(--gold);}
-
 .container{padding:12px;}
 
 input{
-    width:100%;
-    padding:12px;
-    margin:6px 0;
-    border-radius:10px;
-    border:1px solid var(--border);
-    background:#0f0f0f;
-    color:#fff;
+    width:100%;padding:12px;margin:6px 0;
+    border-radius:10px;border:1px solid var(--border);
+    background:#0f0f0f;color:#fff;
 }
 
 button{
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:12px;
+    width:100%;padding:14px;border:none;border-radius:12px;
     background:linear-gradient(90deg,#ffb800,#ff8c00);
     font-weight:800;
 }
 
-.card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:14px;
-    padding:12px;
-    margin-top:10px;
+.preview img{
+    width:70px;height:70px;object-fit:cover;
+    border-radius:8px;margin:4px;
 }
-
-.price{color:var(--gold);font-weight:900;}
 </style>
 </head>
 
@@ -73,98 +46,118 @@ button{
 
 <div class="container">
 
-<input id="search" placeholder="Поиск..." oninput="render()">
-
-<input id="brand" placeholder="Марка">
-<input id="model" placeholder="Модель">
-<input id="year" placeholder="Год">
+<!-- ФОРМА -->
+<input id="auto" placeholder="Авто (марка + модель)">
+<input id="year" placeholder="Год (4 цифры)">
 <input id="price" placeholder="Цена">
+<input id="city" value="Алматы" readonly>
+<input id="engine" placeholder="Объем (например 2.0)">
+<input id="mileage" placeholder="Пробег (км)">
 <input id="phone" placeholder="+7 ___ ___ ____">
 
-<button onclick="sendToWhatsApp()">Отправить в WhatsApp</button>
+<!-- ФОТО -->
+<input type="file" id="photos" accept="image/*" multiple>
+<div class="preview" id="preview"></div>
 
-<div id="list"></div>
+<button onclick="sendToWhatsApp()">Отправить заявку</button>
 
 </div>
 
 <script>
 
-/* LOCAL STORAGE */
-let cars = JSON.parse(localStorage.getItem("cars")||"[]");
+/* ===== ФОРМАТЫ ===== */
 
-/* PHONE FORMAT */
-phone.oninput=e=>{
- let x=e.target.value.replace(/\D/g,'');
- if(!x.startsWith("7")) x="7"+x;
- let f="+7 ";
- if(x.length>1) f+=x.slice(1,4);
- if(x.length>=4) f+=" "+x.slice(4,7);
- if(x.length>=7) f+=" "+x.slice(7,11);
- e.target.value=f;
+/* ГОД (4 цифры) */
+year.oninput=e=>{
+ e.target.value=e.target.value.replace(/\D/g,'').slice(0,4);
 };
 
-/* PRICE FORMAT */
+/* ЦЕНА */
 price.oninput=e=>{
  let v=e.target.value.replace(/\D/g,'');
  e.target.value=v.replace(/\B(?=(\d{3})+(?!\d))/g," ");
 };
 
-/* SEND TO WHATSAPP */
+/* ОБЪЕМ */
+engine.oninput=e=>{
+ e.target.value=e.target.value.replace(/[^0-9.]/g,'');
+};
+
+/* ПРОБЕГ */
+mileage.oninput=e=>{
+ e.target.value=e.target.value.replace(/\D/g,'');
+};
+
+/* ТЕЛЕФОН */
+phone.oninput=e=>{
+ let x=e.target.value.replace(/\D/g,'');
+ if(!x.startsWith("7")) x="7"+x;
+
+ let f="+7 ";
+ if(x.length>1) f+=x.slice(1,4);
+ if(x.length>=4) f+=" "+x.slice(4,7);
+ if(x.length>=7) f+=" "+x.slice(7,11);
+
+ e.target.value=f;
+};
+
+/* ===== ПРЕВЬЮ ФОТО ===== */
+photos.onchange=e=>{
+ preview.innerHTML="";
+ let files=[...e.target.files];
+
+ if(files.length>20){
+  alert("Максимум 20 фото");
+  photos.value="";
+  return;
+ }
+
+ files.forEach(f=>{
+  let img=document.createElement("img");
+  img.src=URL.createObjectURL(f);
+  preview.appendChild(img);
+ });
+};
+
+/* ===== ОТПРАВКА ===== */
 function sendToWhatsApp(){
 
  let p = phone.value.replace(/\D/g,'');
 
+ if(
+  !auto.value ||
+  year.value.length!==4 ||
+  !price.value ||
+  !city.value ||
+  !engine.value ||
+  !phone.value
+ ){
+  alert("Заполни все обязательные поля");
+  return;
+ }
+
  if(p.length!==11){
-  alert("Введите номер правильно");
+  alert("Неверный номер");
   return;
  }
 
  let text =
 `🚗 ЗАЯВКА SAFACARSKZ
 
-Марка: ${brand.value}
-Модель: ${model.value}
+Авто: ${auto.value}
 Год: ${year.value}
 Цена: ${price.value}
-Телефон: ${phone.value}`;
+Город: ${city.value}
+Объем: ${engine.value}
+Пробег: ${mileage.value || "не указан"}
+Телефон: ${phone.value}
+
+📸 Фото прикреплены (см. ниже)`;
 
  let url = "https://wa.me/77066145494?text=" + encodeURIComponent(text);
 
  window.open(url, "_blank");
-
- /* сохраняем */
- let car={
-  brand:brand.value,
-  model:model.value,
-  year:year.value,
-  price:price.value
- };
-
- cars.unshift(car);
- localStorage.setItem("cars",JSON.stringify(cars));
-
- render();
-
- brand.value="";model.value="";year.value="";price.value="";phone.value="";
 }
-
-/* RENDER */
-function render(){
- let q = search.value.toLowerCase();
- list.innerHTML="";
- cars
- .filter(c=>(c.brand+c.model+c.year).toLowerCase().includes(q))
- .forEach(c=>{
-  list.innerHTML+=`
-  <div class="card">
-  <b>${c.brand} ${c.model}</b><br>
-  ${c.year}<br>
-  <div class="price">${c.price} ₸</div>
-  </div>`;
- });
-}
-
-render();
 
 </script>
 
