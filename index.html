@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAFACARSKZ</title>
+
+<style>
+:root{
+    --bg:#050505;
+    --card:#121212;
+    --border:#1f1f1f;
+    --gold:#ffb800;
+}
+
+body{
+    margin:0;
+    font-family:-apple-system;
+    background:var(--bg);
+    color:#fff;
+}
+
+.header{
+    text-align:center;
+    padding:20px;
+    border-bottom:1px solid var(--border);
+}
+
+.logo{
+    font-size:24px;
+    font-weight:900;
+}
+.logo span{color:var(--gold);}
+
+.container{padding:12px;}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:6px 0;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:#0f0f0f;
+    color:#fff;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(90deg,#ffb800,#ff8c00);
+    font-weight:800;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px;
+    margin-top:10px;
+}
+
+.price{color:var(--gold);font-weight:900;}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<div class="logo">SAFA<span>CARS</span>KZ</div>
+</div>
+
+<div class="container">
+
+<input id="search" placeholder="Поиск..." oninput="render()">
+
+<input id="brand" placeholder="Марка">
+<input id="model" placeholder="Модель">
+<input id="year" placeholder="Год">
+<input id="price" placeholder="Цена">
+<input id="phone" placeholder="+7 ___ ___ ____">
+
+<button onclick="sendToWhatsApp()">Отправить в WhatsApp</button>
+
+<div id="list"></div>
+
+</div>
+
+<script>
+
+/* LOCAL STORAGE */
+let cars = JSON.parse(localStorage.getItem("cars")||"[]");
+
+/* PHONE FORMAT */
+phone.oninput=e=>{
+ let x=e.target.value.replace(/\D/g,'');
+ if(!x.startsWith("7")) x="7"+x;
+ let f="+7 ";
+ if(x.length>1) f+=x.slice(1,4);
+ if(x.length>=4) f+=" "+x.slice(4,7);
+ if(x.length>=7) f+=" "+x.slice(7,11);
+ e.target.value=f;
+};
+
+/* PRICE FORMAT */
+price.oninput=e=>{
+ let v=e.target.value.replace(/\D/g,'');
+ e.target.value=v.replace(/\B(?=(\d{3})+(?!\d))/g," ");
+};
+
+/* SEND TO WHATSAPP */
+function sendToWhatsApp(){
+
+ let p = phone.value.replace(/\D/g,'');
+
+ if(p.length!==11){
+  alert("Введите номер правильно");
+  return;
+ }
+
+ let text =
+`🚗 ЗАЯВКА SAFACARSKZ
+
+Марка: ${brand.value}
+Модель: ${model.value}
+Год: ${year.value}
+Цена: ${price.value}
+Телефон: ${phone.value}`;
+
+ let url = "https://wa.me/77066145494?text=" + encodeURIComponent(text);
+
+ window.open(url, "_blank");
+
+ /* сохраняем */
+ let car={
+  brand:brand.value,
+  model:model.value,
+  year:year.value,
+  price:price.value
+ };
+
+ cars.unshift(car);
+ localStorage.setItem("cars",JSON.stringify(cars));
+
+ render();
+
+ brand.value="";model.value="";year.value="";price.value="";phone.value="";
+}
+
+/* RENDER */
+function render(){
+ let q = search.value.toLowerCase();
+ list.innerHTML="";
+ cars
+ .filter(c=>(c.brand+c.model+c.year).toLowerCase().includes(q))
+ .forEach(c=>{
+  list.innerHTML+=`
+  <div class="card">
+  <b>${c.brand} ${c.model}</b><br>
+  ${c.year}<br>
+  <div class="price">${c.price} ₸</div>
+  </div>`;
+ });
+}
+
+render();
+
+</script>
+
+</body>
+</html>
