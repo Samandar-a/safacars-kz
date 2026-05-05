@@ -237,6 +237,10 @@ button:not(.theme-toggle){
 <input type="file" id="photos" multiple accept="image/*">
 <div class="preview" id="preview"></div>
 
+<div id="loader" style="display:none; margin:10px 0; color:#ffb800; font-weight:700;">
+  ⏳ Заявка отправляется, подождите...
+</div>
+
 <button onclick="sendTest()">Отправить заявку</button>
 
 </div>
@@ -316,6 +320,8 @@ async function sendTest(){
   return;
  }
 
+ loader.style.display="block";
+
  let text =
 `🚗 SAFACARSKZ
 
@@ -344,12 +350,15 @@ async function sendTest(){
 
   if(res.ok){
    alert("Заявка отправлена 🚀");
+   loader.style.display="none";
   }else{
    alert("Ошибка отправки");
+   loader.style.display="none";
   }
 
  }catch{
   alert("Ошибка сети");
+  loader.style.display="none";
  }
 }
 
