@@ -309,7 +309,8 @@ photos.onchange=e=>{
  });
 };
 
-function sendTest(){
+async function sendTest(){
+
  if(!type.value || !auto.value || !year.value || !price.value || !engine.value || !phone.value){
   alert("Заполни все обязательные поля");
   return;
@@ -328,8 +329,28 @@ function sendTest(){
 Описание: ${description.value || "не указано"}
 Телефон: ${phone.value}`;
 
- let url = "https://t.me/abdigapirov_s?text=" + encodeURIComponent(text);
- window.open(url, "_blank");
+ let formData = new FormData();
+ formData.append("text", text);
+
+ for(let file of photos.files){
+  formData.append("photos", file);
+ }
+
+ try{
+  let res = await fetch("https://safacars-server-production.up.railway.app/send",{
+   method:"POST",
+   body:formData
+  });
+
+  if(res.ok){
+   alert("Заявка отправлена 🚀");
+  }else{
+   alert("Ошибка отправки");
+  }
+
+ }catch{
+  alert("Ошибка сети");
+ }
 }
 
 </script>
