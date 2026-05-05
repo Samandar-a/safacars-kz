@@ -6,115 +6,302 @@
 <title>SAFACARSKZ</title>
 
 <style>
-:root{
-    --bg:#050505;
-    --card:#121212;
-    --border:#1f1f1f;
-    --gold:#ffb800;
+*{box-sizing:border-box;}
+
+body{
+ margin:0;
+ font-family:-apple-system, BlinkMacSystemFont, sans-serif;
+ min-height:100vh;
+ background:#050505;
+ color:#fff;
+ transition:0.3s;
 }
 
-body{margin:0;font-family:-apple-system;background:var(--bg);color:#fff;}
-.header{text-align:center;padding:20px;border-bottom:1px solid var(--border);}
-.logo{font-size:24px;font-weight:900;}
-.logo span{color:var(--gold);}
-.container{padding:12px;}
-
-input, select{
-    width:100%;padding:12px;margin:6px 0;
-    border-radius:10px;border:1px solid var(--border);
-    background:#0f0f0f;color:#fff;
+/* ТЕМЫ */
+body.light{
+ background:#f5f5f7;
+ color:#000;
 }
 
-button{
-    width:100%;padding:14px;border:none;border-radius:12px;
-    background:linear-gradient(90deg,#ffb800,#ff8c00);
-    font-weight:800;
+body.silver{
+ background:linear-gradient(135deg,#dcdcdc,#9a9a9a);
+ color:#000;
+}
+
+/* КНОПКА ТЕМЫ */
+.theme-toggle{
+ position:fixed;
+ top:15px;
+ right:15px;
+ width:46px;
+ height:46px;
+ border-radius:50%;
+ border:1px solid rgba(255,255,255,0.25);
+ background:rgba(255,255,255,0.08);
+ backdrop-filter:blur(25px);
+ -webkit-backdrop-filter:blur(25px);
+ color:#fff;
+ font-size:18px;
+ z-index:999;
+ box-shadow:0 8px 25px rgba(0,0,0,0.4);
+}
+
+body.light .theme-toggle,
+body.silver .theme-toggle{
+ color:#000;
+ background:rgba(255,255,255,0.6);
+ border:1px solid rgba(0,0,0,0.1);
+}
+
+/* ШАПКА */
+.header{
+ text-align:center;
+ padding:28px 60px 15px;
+}
+
+.logo{
+ font-size:28px;
+ font-weight:900;
+ letter-spacing:2px;
+}
+
+.logo span{
+ color:#ffb800;
+}
+
+.tagline{
+ font-size:12px;
+ color:#aaa;
+ letter-spacing:2px;
+ margin-top:6px;
+}
+
+/* КАРТОЧКА */
+.card{
+ margin:15px;
+ padding:16px;
+ border-radius:26px;
+ background:rgba(255,255,255,0.05);
+ backdrop-filter:blur(35px);
+ -webkit-backdrop-filter:blur(35px);
+ border:1px solid rgba(255,255,255,0.15);
+ box-shadow:
+  0 25px 60px rgba(0,0,0,0.5),
+  inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+body.light .card{
+ background:rgba(255,255,255,0.55);
+ border:1px solid rgba(255,255,255,0.7);
+ box-shadow:
+  0 20px 50px rgba(0,0,0,0.15),
+  inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+body.silver .card{
+ background:rgba(255,255,255,0.55);
+ border:1px solid rgba(255,255,255,0.7);
+ box-shadow:
+  0 20px 50px rgba(0,0,0,0.15),
+  inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+/* ПОЛЯ */
+input, select, textarea{
+ width:100%;
+ padding:14px;
+ margin:7px 0;
+ border-radius:16px;
+ border:1px solid rgba(255,255,255,0.15);
+ background:rgba(255,255,255,0.06);
+ backdrop-filter:blur(25px);
+ -webkit-backdrop-filter:blur(25px);
+ color:#fff;
+ font-size:15px;
+ outline:none;
+}
+
+input::placeholder,
+textarea::placeholder{
+ color:rgba(255,255,255,0.6);
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+ border-color:#ffb800;
+ box-shadow:0 0 0 3px rgba(255,184,0,0.2);
+}
+
+/* БЕЛАЯ ТЕМА — ВКЛАДКИ СЕРЕБРИСТЫЕ, ЧЕТКО ВИДНЫЕ */
+body.light input,
+body.light select,
+body.light textarea{
+ background:#d9d9d9;
+ color:#000;
+ border:1px solid #9f9f9f;
+ box-shadow:
+  inset 0 1px 0 rgba(255,255,255,0.7),
+  0 4px 12px rgba(0,0,0,0.08);
+}
+
+body.light input::placeholder,
+body.light textarea::placeholder{
+ color:rgba(0,0,0,0.5);
+}
+
+/* СЕРЕБРИСТАЯ ТЕМА — НЕ ТРОГАЛ */
+body.silver input,
+body.silver select,
+body.silver textarea{
+ background:rgba(255,255,255,0.85);
+ color:#000;
+ border:1px solid rgba(0,0,0,0.12);
+}
+
+body.silver input::placeholder,
+body.silver textarea::placeholder{
+ color:rgba(0,0,0,0.45);
+}
+
+textarea{
+ min-height:95px;
+ resize:vertical;
+}
+
+/* КНОПКА */
+button:not(.theme-toggle){
+ width:100%;
+ padding:15px;
+ border:none;
+ border-radius:18px;
+ background:linear-gradient(135deg,#ffcc33,#ff9d00);
+ font-weight:900;
+ color:#000;
+ font-size:15px;
+ margin-top:10px;
+ box-shadow:
+  0 14px 30px rgba(255,184,0,0.3),
+  inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+/* ФОТО */
+.preview{
+ display:flex;
+ flex-wrap:wrap;
+ margin-top:8px;
 }
 
 .preview img{
-    width:70px;height:70px;object-fit:cover;
-    border-radius:8px;margin:4px;
+ width:74px;
+ height:74px;
+ object-fit:cover;
+ margin:4px;
+ border-radius:16px;
+ border:1px solid rgba(255,255,255,0.25);
+ box-shadow:0 8px 18px rgba(0,0,0,0.4);
 }
 </style>
 </head>
 
 <body>
 
+<button class="theme-toggle" id="themeBtn">🌙</button>
+
 <div class="header">
 <div class="logo">SAFA<span>CARS</span>KZ</div>
+<div class="tagline">I SHOW YOU DECIDE</div>
 </div>
 
-<div class="container">
+<div class="card">
 
-<!-- НОВАЯ ВКЛАДКА -->
 <select id="type">
-<option value="">Выберите тип</option>
+<option value="">Выберите услугу</option>
 <option>Фотосессия авто</option>
 <option>Реклама авто</option>
 </select>
 
-<input id="auto" placeholder="Авто (марка + модель)">
-<input id="year" placeholder="Год (4 цифры)">
+<input id="auto" placeholder="Авто">
+<input id="year" placeholder="Год">
 <input id="price" placeholder="Цена">
+
 <input id="city" value="Алматы" readonly>
-<input id="engine" placeholder="Объем (например 2.0)">
-<input id="mileage" placeholder="Пробег (км)">
+
+<input id="engine" placeholder="Объем">
+<input id="mileage" placeholder="Пробег">
+
+<textarea id="description" placeholder="Описание авто"></textarea>
+
 <input id="phone" placeholder="+7 ___ ___ ____">
 
-<input type="file" id="photos" accept="image/*" multiple>
+<input type="file" id="photos" multiple accept="image/*">
 <div class="preview" id="preview"></div>
 
-<button onclick="sendToTelegram()">Отправить заявку</button>
+<button onclick="sendTest()">Отправить заявку</button>
 
 </div>
 
 <script>
 
-/* ГОД */
-year.oninput=e=>{
- e.target.value=e.target.value.replace(/\D/g,'').slice(0,4);
+let themeIndex = 0;
+
+themeBtn.onclick = () => {
+ themeIndex++;
+ if(themeIndex > 2) themeIndex = 0;
+
+ document.body.classList.remove("light","silver");
+
+ if(themeIndex === 1){
+  document.body.classList.add("light");
+  themeBtn.innerHTML = "☀️";
+ }
+ else if(themeIndex === 2){
+  document.body.classList.add("silver");
+  themeBtn.innerHTML = "⚪";
+ }
+ else{
+  themeBtn.innerHTML = "🌙";
+ }
 };
 
-/* ЦЕНА */
+auto.oninput=e=>{e.target.value=e.target.value.replace(/[^a-zA-Z0-9 ]/g,'');};
+
+year.oninput=e=>{
+ let v=e.target.value.replace(/\D/g,'').slice(0,4);
+ if(parseInt(v) > 2026) v = 2026;
+ e.target.value=v;
+};
+
 price.oninput=e=>{
  let v=e.target.value.replace(/\D/g,'');
  e.target.value=v.replace(/\B(?=(\d{3})+(?!\d))/g," ");
 };
 
-/* ОБЪЕМ */
 engine.oninput=e=>{
- e.target.value=e.target.value.replace(/[^0-9.]/g,'');
+ let v=e.target.value.replace(',', '.').replace(/[^0-9.]/g,'');
+ let num=parseFloat(v);
+ if(num>99.9) v="99.9";
+ e.target.value=v;
 };
 
-/* ПРОБЕГ */
 mileage.oninput=e=>{
- e.target.value=e.target.value.replace(/\D/g,'');
+ let v=e.target.value.replace(/\D/g,'');
+ e.target.value=v.replace(/\B(?=(\d{3})+(?!\d))/g," ");
 };
 
-/* ТЕЛЕФОН */
 phone.oninput=e=>{
- let x=e.target.value.replace(/\D/g,'');
- if(!x.startsWith("7")) x="7"+x;
-
- let f="+7 ";
- if(x.length>1) f+=x.slice(1,4);
- if(x.length>=4) f+=" "+x.slice(4,7);
- if(x.length>=7) f+=" "+x.slice(7,11);
-
- e.target.value=f;
+ let digits = e.target.value.replace(/\D/g,'').slice(0,11);
+ let result = "+7";
+ if(digits.length > 1) result += " " + digits.slice(1,4);
+ if(digits.length >= 4) result += " " + digits.slice(4,7);
+ if(digits.length >= 7) result += " " + digits.slice(7,11);
+ e.target.value = result;
 };
 
-/* ФОТО */
 photos.onchange=e=>{
  preview.innerHTML="";
  let files=[...e.target.files];
-
- if(files.length>20){
-  alert("Максимум 20 фото");
-  photos.value="";
-  return;
- }
-
+ if(files.length>20){alert("Максимум 20 фото");photos.value="";return;}
  files.forEach(f=>{
   let img=document.createElement("img");
   img.src=URL.createObjectURL(f);
@@ -122,25 +309,9 @@ photos.onchange=e=>{
  });
 };
 
-/* ОТПРАВКА В TELEGRAM */
-function sendToTelegram(){
-
- let p = phone.value.replace(/\D/g,'');
-
- if(
-  !type.value ||
-  !auto.value ||
-  year.value.length!==4 ||
-  !price.value ||
-  !engine.value ||
-  !phone.value
- ){
+function sendTest(){
+ if(!type.value || !auto.value || !year.value || !price.value || !engine.value || !phone.value){
   alert("Заполни все обязательные поля");
-  return;
- }
-
- if(p.length!==11){
-  alert("Неверный номер");
   return;
  }
 
@@ -154,12 +325,10 @@ function sendToTelegram(){
 Город: ${city.value}
 Объем: ${engine.value}
 Пробег: ${mileage.value || "не указан"}
-Телефон: ${phone.value}
-
-📸 Фото добавлены`;
+Описание: ${description.value || "не указано"}
+Телефон: ${phone.value}`;
 
  let url = "https://t.me/abdigapirov_s?text=" + encodeURIComponent(text);
-
  window.open(url, "_blank");
 }
 
