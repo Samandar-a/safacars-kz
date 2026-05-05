@@ -241,7 +241,7 @@ button:not(.theme-toggle){
   ⏳ Заявка отправляется, подождите...
 </div>
 
-<button onclick="sendTest()">Отправить заявку</button>
+<button id="sendBtn" onclick="sendTest()">Отправить заявку</button>
 
 </div>
 
@@ -313,14 +313,23 @@ photos.onchange=e=>{
  });
 };
 
+let isSending = false;
+
 async function sendTest(){
+
+ if(isSending) return;
 
  if(!type.value || !auto.value || !year.value || !price.value || !engine.value || !phone.value){
   alert("Заполни все обязательные поля");
   return;
  }
 
- loader.style.display="block";
+ isSending = true;
+ sendBtn.disabled = true;
+ sendBtn.innerText = "Отправляется...";
+ sendBtn.style.opacity = "0.6";
+
+ loader.style.display = "block";
 
  let text =
 `🚗 SAFACARSKZ
@@ -350,16 +359,19 @@ async function sendTest(){
 
   if(res.ok){
    alert("Заявка отправлена 🚀");
-   loader.style.display="none";
   }else{
    alert("Ошибка отправки");
-   loader.style.display="none";
   }
 
  }catch{
   alert("Ошибка сети");
-  loader.style.display="none";
  }
+
+ loader.style.display = "none";
+ sendBtn.disabled = false;
+ sendBtn.innerText = "Отправить заявку";
+ sendBtn.style.opacity = "1";
+ isSending = false;
 }
 
 </script>
